@@ -1,19 +1,19 @@
 # aad_device_diagnostic
 
-1. [ここ](https://github.com/jpazureid/aad_device_diagnostic/archive/refs/heads/main.zip) から　aad_device_diagnostic-main.zip をダウンロードし、事象が発生する端末に展開します。
+1. [Releases](https://github.com/jpazureid/aad_device_diagnostic/releases) から　AAD_Device_Diag_v1.1.zip をダウンロードし、事象が発生する端末に展開します。
 
-2. ユーザー権限で PowerSehll を起動し、aad_device_diagnostic-main.zip を展開したいフォルダに移動します。
+2. **ユーザー権限**で PowerSehll を起動し、AAD_Device_Diag_v1.1.zip を展開したフォルダに cd コマンドなどで移動し、dir コマンドなどで aad_log_user.ps1 ファイルが存在することを確認します。
 
 3. 以下を入力し、aad_log_user.ps1 スクリプトを実行します。
 ```
 Powershell.exe -Executionpolicy ByPass .\aad_log_user.ps1
 ```
 4. 現在のユーザーにはローカル管理者権限がある場合、UAC (ユーザーアカウント制御) のウィンドウが表示されますので、[はい] をクリックします。<br />
-現在のユーザーにはローカル管理者権限がない場合、UAC  (ユーザーアカウント制御) のウィンドウでローカル管理者権限の情報を入力し、[はい] をクリックします。
+現在のユーザーにはローカル管理者権限がない場合、UAC のウィンドウでローカル管理者権限の情報を入力し、[はい] をクリックします。
 
 
-5. 管理者権限で別の PowerShell ウィンドウが起動してきますので、現在のフォルダは aad_device_diagnostic-main.zip を展開したフォルダであることを確認します。<br/>
-aad_device_diagnostic-main.zip を展開したフォルダではない場合、aad_device_diagnostic-main.zip を展開したフォルダに移動します。
+5. 管理者権限で別の PowerShell ウィンドウが起動してきますので、現在のフォルダが aad_device_diagnostic-main.zip を展開したフォルダであることを確認します。<br/>
+aad_device_diagnostic-main.zip を展開したフォルダではない場合、aad_device_diagnostic-main.zip を展開したフォルダに PowerShell プロンプト上で移動します。
 
 
 6. 新しい PowerShell ウィンドウで以下のコマンドを実行し、
