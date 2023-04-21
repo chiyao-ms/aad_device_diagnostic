@@ -1,8 +1,8 @@
 # aad_device_diagnostic
 
-1. [Releases](https://github.com/jpazureid/aad_device_diagnostic/releases) から　AAD_Device_Diag_v1.1.zip をダウンロードし、事象が発生する端末に展開します。
+1. [ここ](https://github.com/jpazureid/aad_device_diagnostic/archive/refs/heads/main.zip) から aad_device_diagnostic-main.zip をダウンロードし、事象が発生する端末に展開します。
 
-2. **ユーザー権限**で PowerSehll を起動し、AAD_Device_Diag_v1.1.zip を展開したフォルダに cd コマンドなどで移動し、dir コマンドなどで aad_log_user.ps1 ファイルが存在することを確認します。
+2. **ユーザー権限**で PowerSehll を起動し、aad_device_diagnostic-main.zip を展開したフォルダに cd コマンドなどで移動し、dir コマンドなどで aad_log_user.ps1 ファイルが存在することを確認します。
 
 3. 以下を入力し、aad_log_user.ps1 スクリプトを実行します。
 ```
