@@ -111,7 +111,7 @@ Function Get_WAM_TokenBroker_Cache_Info
 
 Function Get_Other_Logs
 {
-    Write-Host " Collecting all other logs..." -ForegroundColor Blue
+    Write-Host " Collecting all other logs...`n" -ForegroundColor Blue
     
     #dsregcmd
     dsregcmd.exe /status > $global:full_folder"\dsregcmd_status_user.txt" 2>&1 | Out-Null
@@ -167,7 +167,7 @@ Create_Log_Folder
 
 # Start a new PowerShell window in Admin context
 Write-Host "Start a new PowerShell window under administrator context. Please prepare an user credential who has local administrator priviledge." -ForegroundColor Yellow
-Write-Host "Please DO NOT close this window...`n" -ForegroundColor Yellow
+Write-Host "Please DO NOT close this window...`n" -ForegroundColor Red
 Start-Sleep 1
 Start-Process powershell -verb runas -ArgumentList "-NoExit", "-Command", "Set-Location", " '$global:Current_Folder'" -Wait
 

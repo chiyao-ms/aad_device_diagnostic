@@ -926,6 +926,7 @@ Function Stop_NetTrace_Get_NetInfo
     # 2023/4/14 Change from RemoteSigned to Bypass
     Powershell.exe -ExecutionPolicy Bypass -File $global:current_Folder"\Test-DeviceRegConnectivity.ps1" | Out-File -FilePath $global:full_net_folder"Test_DeviceRegConnectivity_Output.txt" 2>&1 | Out-Null
     Copy-Item $global:current_Folder"\Test-DeviceRegConnectivity.log" -Destination $global:full_net_folder | Out-Null
+    Remove-Item $global:current_Folder"\Test-DeviceRegConnectivity.log" -Force  | Out-Null
     
     #.\Test-DeviceRegConnectivity.ps1 | Out-Null
     #Move-Item $global:current_Folder"\Test-DeviceRegConnectivity.log" -Destination $global:full_net_folder | Out-Null

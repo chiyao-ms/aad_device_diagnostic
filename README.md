@@ -13,7 +13,8 @@ Powershell.exe -Executionpolicy ByPass .\aad_log_user.ps1
 
 
 5. 管理者権限で別の PowerShell ウィンドウが起動してきますので、現在のフォルダが aad_device_diagnostic-main.zip を展開したフォルダであることを確認します。<br/>
-aad_device_diagnostic-main.zip を展開したフォルダではない場合、aad_device_diagnostic-main.zip を展開したフォルダに PowerShell プロンプト上で移動します。
+aad_device_diagnostic-main.zip を展開したフォルダではない場合、aad_device_diagnostic-main.zip を展開したフォルダに PowerShell プロンプト上で移動します。<br/>
+**＊手順2 で起動した PowerShell ウィンドウを閉じないて下さい。**
 
 
 6. 新しい PowerShell ウィンドウで以下のコマンドを実行し、
