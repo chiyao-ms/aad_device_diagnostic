@@ -192,5 +192,5 @@ Remove-Variable Current_Folder  -Scope:global
 Remove-Variable root_folder -Scope:global
 
 # Last Message
-Write-Host "Thank you for collecging logs." -ForegroundColor Yellow
+Write-Host "Thank you for collecting logs." -ForegroundColor Yellow
 Write-Host "Please compress [C:\AAD_Logs] folder and send it to us." -ForegroundColor Yellow
