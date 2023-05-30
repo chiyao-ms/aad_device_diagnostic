@@ -2,7 +2,7 @@
 
 1. [ここ](https://github.com/jpazureid/aad_device_diagnostic/archive/refs/heads/main.zip) から aad_device_diagnostic-main.zip をダウンロードし、事象が発生する端末に展開します。
 
-2. **ユーザー権限**で PowerSehll を起動し、aad_device_diagnostic-main.zip を展開したフォルダに cd コマンドなどで移動し、dir コマンドなどで aad_log_user.ps1 ファイルが存在することを確認します。
+2. **ユーザー権限**で PowerShell を起動し、aad_device_diagnostic-main.zip を展開したフォルダに cd コマンドなどで移動し、dir コマンドなどで aad_log_user.ps1 ファイルが存在することを確認します。
 
 3. 以下を入力し、aad_log_user.ps1 スクリプトを実行します。
 ```
@@ -33,7 +33,7 @@ Press Enter key to stop logging.....
 この信頼されていない発行元からのソフトウェアを実行しますか?
 ```
 
-9. 以下のメッセージが表示されましたら、手順 5 で起動した Powershell ウィンドウで "exit" を入力するか、または Powershell ウィンドウの右上の× (バツ) ボタンをクリックし、ウィンドウを閉じます。
+9. 以下のメッセージが表示されましたら、手順 5 で起動した Powershell ウィンドウで "exit" を入力するか、または Powershell ウィンドウの右上の × (バツ) ボタンをクリックし、ウィンドウを閉じます。
 ```
 Now you can close this window by entering 'Exit'.
 ```
@@ -41,7 +41,7 @@ Now you can close this window by entering 'Exit'.
 
 11. 以下のメッセージが表示されましたら、ログ採取は完了したことを示しますので、C:\AAD_Logs フォルダを .zip などに圧縮し、弊社まで送りください。
 ```
-Thank you for collecging logs.
+Thank you for collecting logs.
 Please compress [C:\AAD_Logs] folder and send us.
 ```
 
