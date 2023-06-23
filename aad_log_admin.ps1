@@ -5,6 +5,9 @@ $global:root_folder = "C:\AAD_Logs\"
 $temp_log_root_folder = Get-ChildItem $global:root_folder -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 $global:full_folder = $global:root_folder+$temp_log_root_folder 
 
+# Start Transcript
+Start-Transcript -Path $(Join-Path -Path $global:full_folder -ChildPath "transcript-admin.log") -Append -IncludeInvocationHeader
+
 # Get the current working folder
 $global:current_Folder = (Get-Location).Path
 
