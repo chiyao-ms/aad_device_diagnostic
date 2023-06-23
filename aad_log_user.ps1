@@ -169,7 +169,7 @@ Create_Log_Folder
 Write-Host "Start a new PowerShell window under administrator context. Please prepare an user credential who has local administrator priviledge." -ForegroundColor Yellow
 Write-Host "Please DO NOT close this window...`n" -ForegroundColor Red
 Start-Sleep 1
-Start-Process powershell -verb runas -ArgumentList "-NoExit", "-Command", "Set-Location", " '$global:Current_Folder'" -Wait
+Start-Process powershell -verb runas -ArgumentList "-NoExit", "-Command", "Set-Location", " '$global:Current_Folder';" , ".\aad_log_admin.ps1; exit;" -Wait
 
 # Start collect logs in user context
 Write-Host "Start collecting logs under user context...`n" -ForegroundColor Yellow
