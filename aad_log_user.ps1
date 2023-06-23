@@ -11,7 +11,6 @@ $global:full_wam_folder = ""
 $global:full_etw_folder = ""
 $global:Current_Folder = (Get-Location).Path
 
-
 # All functions
 Function Create_Log_Folder
 {
@@ -24,7 +23,10 @@ Function Create_Log_Folder
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_folder -ItemType Directory | Out-Null
     }
-    
+
+    # Start Transcript
+    Start-Transcript -Path $(Join-Path -Path $global:full_folder -ChildPath "transcript-user.log") -Append -IncludeInvocationHeader
+
     #Creating folder for logs of thie script
     $global:full_script_logs_folder = $global:full_folder+"\Logs_of_script\"
     If (!(Test-Path $global:full_script_logs_folder))
@@ -169,7 +171,7 @@ Create_Log_Folder
 Write-Host "Start a new PowerShell window under administrator context. Please prepare an user credential who has local administrator priviledge." -ForegroundColor Yellow
 Write-Host "Please DO NOT close this window...`n" -ForegroundColor Red
 Start-Sleep 1
-Start-Process powershell -verb runas -ArgumentList "-NoExit", "-Command", "Set-Location", " '$global:Current_Folder'" -Wait
+Start-Process powershell -verb runas -ArgumentList "-NoExit", "-Command", "Set-Location", " '$global:Current_Folder';" , ".\aad_log_admin.ps1; exit;" -Wait
 
 # Start collect logs in user context
 Write-Host "Start collecting logs under user context...`n" -ForegroundColor Yellow
