@@ -139,7 +139,7 @@ Function Get_Other_Logs
     $Root = [ADSI]"LDAP://RootDSE"
     $rootdn = $Root.rootDomainNamingContext
 
-    if ($rootdn -ne $null)
+    if ($null -ne $rootdn)
     {
         $scp = New-Object System.DirectoryServices.DirectoryEntry
         $scp.Path = "LDAP://CN=62a0ff2e-97b9-4513-943f-0d221bd30080,CN=Device Registration Configuration,CN=Services,CN=Configuration,"+$rootdn
@@ -160,6 +160,23 @@ Function Get_Other_Logs
     Get-ChildItem -Path "$($env:LOCALAPPDATA)\Microsoft\TokenBroker" -Recurse -Force 2>&1 > $global:full_folder"\FILE_LIST_MS_TokenBroker.txt" | Out-Null
     Get-ChildItem -Path "$($env:LOCALAPPDATA)\Packages\Microsoft.Windows.CloudExperienceHost_cw5n1h2txyewy" -Recurse -Force 2>&1 > $global:full_folder"\FILE_LIST_MSA_BrokerPlugin.txt" | Out-Null
     #Write-Host " Done collecting all other logs...`n" -ForegroundColor Blue
+    
+    # HKCU
+    reg query "HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WorkplaceJoin" /s > $global:full_reg_folder"HKCU_WPJ.txt" 2>&1 | Out-Null
+    reg query "HKCU\SOFTWARE\Microsoft\SCEP" /s > $global:full_reg_folder"HKCU_scep.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Microsoft\IdentityCRL" /s > $global:full_reg_folder"HKCU_IdentityCRL.txt" 2>&1 | Out-Null
+    reg query "HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\TokenBroker" /s > $global:full_reg_folder"HKCU_TokenBroker.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.aad.brokerplugin_cw5n1h2txyewy" /s > $global:full_reg_folder"HKCU_AAD_BrokerPlugIn.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /s > $global:full_reg_folder"HKCU_ContentDeliveryManager.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Microsoft\AuthCookies" /s > $global:full_reg_folder"HKCU_AuthCookies.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\AAD" /s > $global:full_reg_folder"HKCU_AAD.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\PushNotifications" /s > $global:full_reg_folder"HKCU_PushNotifications.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\ActivityDataModel" /s > $global:full_reg_folder"HKCU_ActivityDataModel.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Classes\Local Settings\MrtCache" /s > $global:full_reg_folder"HKCU_MrtCache.txt" 2>&1 | Out-Null
+
+    # WinINet
+    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections" /s > $global:full_net_folder"REG_WinINet01.txt" 2>&1 | Out-Null
+    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /s > $global:full_net_folder"REG_WinINet02.txt" 2>&1 | Out-Null
 }
 
 

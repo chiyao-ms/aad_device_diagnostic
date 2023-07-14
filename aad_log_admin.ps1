@@ -102,7 +102,6 @@ $WAM_Providers =
 {EF00584A-2655-462C-BC24-E7DE630E7FBF} 0xffffffffffffffff 0xff
 {d48533a7-98e4-566d-4956-12474e32a680} 0xffffffffffffffff 0xff
 {0b618b2b-0310-431e-be64-09f4b3e3e6da} 0xffffffffffffffff 0xff
-
 {20f61733-57f1-4127-9f48-4ab7a9308ae2} 0xffffffffffffffff 0xff
 {b3a7698a-0c45-44da-b73d-e181c9b5c8e6} 0xffffffffffffffff 0xff
 {4e749B6A-667D-4C72-80EF-373EE3246B08} 0xffffffffffffffff 0xff
@@ -938,8 +937,9 @@ Function Stop_NetTrace_Get_NetInfo
     netsh winhttp show proxy > $global:full_net_folder"winhttp_proxy.txt" 2>&1 | Out-Null
 
     # WinINet
-    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections" /s > $global:full_net_folder"REG_WinINet01.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /s > $global:full_net_folder"REG_WinINet02.txt" 2>&1 | Out-Null
+    # 2023/7/13 Move this to user context
+    #reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections" /s > $global:full_net_folder"REG_WinINet01.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /s > $global:full_net_folder"REG_WinINet02.txt" 2>&1 | Out-Null
 
     # ipconfig
     ipconfig /all > $global:full_net_folder"IPCofig_ALL.txt" 2>&1 | Out-Null
@@ -948,6 +948,11 @@ Function Stop_NetTrace_Get_NetInfo
     # netstat
     netstat -anoi > $global:full_net_folder"netstat_anoi.txt" 2>&1 | Out-Null
     netstat -r > $global:full_net_folder"netstat_routingTable.txt" 2>&1 | Out-Null
+
+    # bitsadmin proxy of system, networkservice and localservice
+    bitsadmin /util /getieproxy LOCALSYSTEM > $global:full_net_folder"LOCAL_SYSTEM_proxy.txt" 2>&1 | Out-Null
+    bitsadmin /util /getieproxy NETWORKSERVICE > $global:full_net_folder"NETWORK_SERVICE_proxy.txt" 2>&1 | Out-Null
+    bitsadmin /util /getieproxy LOCALSERVICE > $global:full_net_folder"LOCAL_SERVICE_proxy.txt" 2>&1 | Out-Null
 }
 
 
@@ -1073,18 +1078,19 @@ Function Get_Reg
     reg query "HKEY_USERS\.Default\Software\Microsoft\IdentityCRL" /s >> $global:full_reg_folder"HKU_idstore_config.txt" 2>&1 | Out-Null
 
     # HKCU
-    reg query "HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WorkplaceJoin" /s > $global:full_reg_folder"HKCU_WPJ.txt" 2>&1 | Out-Null
-    reg query "HKCU\SOFTWARE\Microsoft\SCEP" /s > $global:full_reg_folder"HKCU_scep.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Microsoft\IdentityCRL" /s > $global:full_reg_folder"HKCU_IdentityCRL.txt" 2>&1 | Out-Null
-    reg query "HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\TokenBroker" /s > $global:full_reg_folder"HKCU_TokenBroker.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.aad.brokerplugin_cw5n1h2txyewy" /s > $global:full_reg_folder"HKCU_AAD_BrokerPlugIn.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /s > $global:full_reg_folder"HKCU_ContentDeliveryManager.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Microsoft\AuthCookies" /s > $global:full_reg_folder"HKCU_AuthCookies.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\AAD" /s > $global:full_reg_folder"HKCU_AAD.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\PushNotifications" /s > $global:full_reg_folder"HKCU_PushNotifications.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\ActivityDataModel" /s > $global:full_reg_folder"HKCU_ActivityDataModel.txt" 2>&1 | Out-Null
-    reg query "HKCU\Software\Classes\Local Settings\MrtCache" /s > $global:full_reg_folder"HKCU_MrtCache.txt" 2>&1 | Out-Null
-    reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AAD" /s > $global:full_reg_folder"HKCU_AAD.txt" 2>&1 | Out-Null
+    # 2023/7/13 Move to user context
+    #reg query "HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WorkplaceJoin" /s > $global:full_reg_folder"HKCU_WPJ.txt" 2>&1 | Out-Null
+    #reg query "HKCU\SOFTWARE\Microsoft\SCEP" /s > $global:full_reg_folder"HKCU_scep.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Microsoft\IdentityCRL" /s > $global:full_reg_folder"HKCU_IdentityCRL.txt" 2>&1 | Out-Null
+    #reg query "HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\TokenBroker" /s > $global:full_reg_folder"HKCU_TokenBroker.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.aad.brokerplugin_cw5n1h2txyewy" /s > $global:full_reg_folder"HKCU_AAD_BrokerPlugIn.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /s > $global:full_reg_folder"HKCU_ContentDeliveryManager.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Microsoft\AuthCookies" /s > $global:full_reg_folder"HKCU_AuthCookies.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\AAD" /s > $global:full_reg_folder"HKCU_AAD.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\PushNotifications" /s > $global:full_reg_folder"HKCU_PushNotifications.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\ActivityDataModel" /s > $global:full_reg_folder"HKCU_ActivityDataModel.txt" 2>&1 | Out-Null
+    #reg query "HKCU\Software\Classes\Local Settings\MrtCache" /s > $global:full_reg_folder"HKCU_MrtCache.txt" 2>&1 | Out-Null
+    #reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AAD" /s > $global:full_reg_folder"HKCU_AAD.txt" 2>&1 | Out-Null
 
     If ($global:verbose_output){Write-Host "Exiting Get-Reg" -ForegroundColor Red}
 }
