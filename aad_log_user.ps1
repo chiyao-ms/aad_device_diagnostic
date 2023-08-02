@@ -181,11 +181,18 @@ Function Get_Other_Logs
 
 
 # Start script
+#Added on 2023-8-2 to check if the powershell shell is running under admin context
+if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) 
+{
+    Write-Host "You are running this powershell shell under administrator context!`nPlease re-start this powershell shell under user's context.`n" -ForegroundColor Red
+    exit
+}
+
 Write-Host "`nPreparing collecting log.....`n" -ForegroundColor Yellow
 Create_Log_Folder
 
 # Start a new PowerShell window in Admin context
-Write-Host "Start a new PowerShell window under administrator context. Please prepare an user credential who has local administrator priviledge." -ForegroundColor Yellow
+Write-Host "Start a new PowerShell window under administrator context.`nPlease prepare an user credential who has local administrator priviledge." -ForegroundColor Yellow
 Write-Host "Please DO NOT close this window...`n" -ForegroundColor Red
 Start-Sleep 1
 Start-Process powershell -verb runas -ArgumentList "-NoExit", "-Command", "Set-Location", " '$global:Current_Folder';" , "Powershell.exe -Executionpolicy Bypass .\aad_log_admin.ps1; exit;" -Wait
