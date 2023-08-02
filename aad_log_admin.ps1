@@ -1073,6 +1073,7 @@ Function Get_Reg
     reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\TokenBroker" /s > $global:full_reg_folder"HKLM_TOkenBroker.txt" 2>&1 | Out-Null
     reg query "HKLM\Software\Microsoft\Enrollments" /s > $global:full_reg_folder"HKLM_Enrollments.txt" 2>&1 | Out-Null
     reg query "HKLM\SYSTEM\CurrentControlSet\Control\Lsa\pku2u" /s > $global:full_reg_folder"HKLM_pku2u.txt" 2>&1 | Out-Null
+    reg query "HKLM\Software\Policies\Microsoft\Windows\WorkplaceJoin" /s > $global:full_reg_folder"HKLM_WPJ_GPO.txt" 2>&1 | Out-Null
 
     # HKU
     reg query "HKEY_USERS\.Default\Software\Microsoft\IdentityCRL" /s >> $global:full_reg_folder"HKU_idstore_config.txt" 2>&1 | Out-Null
