@@ -1,5 +1,8 @@
 # All global parameters
 
+# Setting the output width buffer of Out-File to 10000
+$PSDefaultParameterValues['out-file:width'] = 10000
+
 # Get the log folder
 $global:root_folder = "C:\AAD_Logs\"
 $temp_log_root_folder = Get-ChildItem $global:root_folder -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1
@@ -1139,7 +1142,6 @@ Function Get_SCP
     else 
     {
         "Not able to query SCP on AD from here" | Out-File -FilePath $global:full_folder"\SCP_AD_Admin.txt" 2>&1 | Out-Null
-        
     }
     If ($global:verbose_output){Write-Host "Exiting Get_SCP" -ForegroundColor Red}
 }
@@ -1180,6 +1182,13 @@ Function Get_ALL_Other_INFO
     # Task scheduler
     schtasks /query > $global:full_folder"\schtasks_query.txt" 2>&1 | Out-Null
     If ($global:verbose_output){Write-Host "Exiting Get_ALL_Other_INFO" -ForegroundColor Red}
+
+    # List of applications installed
+    #winget list --accept-source-agreements > $global:full_folder"\apps_installed.txt" 2>&1 | Out-Null
+    get-package | Select-Object Name,Version,Source,ProviderName | Out-File -FilePath $global:full_folder"\apps_installed.txt" 2>&1 | Out-Null
+
+    # List of processes running
+    tasklist /svc > $global:full_folder"\tasklist_svc.txt" 2>&1 | Out-Null
 }
 
 Function Stop_PSR
