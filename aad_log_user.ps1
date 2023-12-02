@@ -1,8 +1,8 @@
 # All global parameters
 $global:root_folder = "C:\AAD_Logs\"
+$global:folder_file = $global:root_folder+$env:COMPUTERNAME
 $global:verbose_output = $false
 $global:full_folder = ""
-$global:full_script_logs_folder = ""
 $global:full_eventlog_folder = ""
 $global:full_reg_folder = ""
 $global:full_cert_folder = ""
@@ -14,32 +14,32 @@ $global:Current_Folder = (Get-Location).Path
 # All functions
 Function Create_Log_Folder
 {
-    # Local Parameters
-    $log_folder = (Get-Date).ToString("yyyy-MM-dd_hh-mm-ss")
-    $global:full_folder = $global:root_folder+$log_folder
+    # Creating the root folder and the file is used in creating folders
+    if (!(Test-Path $global:root_folder))
+    {
+        If ($global:verbose_output){Write-Host "Creating Folder" $global:root_folder -ForegroundColor Red}
+        New-Item -Path $global:root_folder -ItemType Directory | Out-Null
+    }
+        
+    if (Test-Path $global:folder_file)
+    {
+        $log_folder = Get-Content -Path $global:folder_file
+        Remove-Item -Path $global:folder_file -Force
+    }
+    else
+    {
+        $log_folder = (Get-Date).ToString("yyyy-MM-dd_HH-mm-ss")
+    }
 
+    # Local Parameters
+    $global:full_folder = $global:root_folder+$log_folder
     If (!(Test-Path $global:full_folder))
     {
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_folder -ItemType Directory | Out-Null
     }
 
-    # Start Transcript
-    Start-Transcript -Path $(Join-Path -Path $global:full_folder -ChildPath "transcript-user.log") -Append -IncludeInvocationHeader
 
-    #Creating folder for logs of thie script
-    $global:full_script_logs_folder = $global:full_folder+"\Logs_of_script\"
-    If (!(Test-Path $global:full_script_logs_folder))
-    {
-        If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
-        New-Item -Path $global:full_script_logs_folder -ItemType Directory | Out-Null
-    }
-    If ($global:verbose_output){Write-Host $global:full_script_logs_folder" exsited" -ForegroundColor Red}
-    $global:full_script_logs_folder = $global:full_script_logs_folder+"script_time_logs.txt"
-    $start_time = "Start at " 
-    $start_time += Get-Date
-    $start_time | Out-File -FilePath $global:full_script_logs_folder
-    
     #Creating event logs folder
     $global:full_eventlog_folder = $global:full_folder+"\Event_Logs\"
     If (!(Test-Path $global:full_eventlog_folder))
@@ -47,8 +47,8 @@ Function Create_Log_Folder
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_eventlog_folder -ItemType Directory | Out-Null
     }
-    If ($global:verbose_output){Write-Host $global:full_eventlog_folder" exsited" -ForegroundColor Red}
 
+    
     #Creating registry info folder
     $global:full_reg_folder = $global:full_folder+"\Registry\"
     If (!(Test-Path $global:full_reg_folder))
@@ -56,7 +56,7 @@ Function Create_Log_Folder
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_reg_folder -ItemType Directory | Out-Null
     }
-    If ($global:verbose_output){Write-Host $global:full_eventlog_folder" exsited" -ForegroundColor Red}
+
 
     #Creating certificate folder
     $global:full_cert_folder = $global:full_folder+"\Certificates\"
@@ -65,7 +65,7 @@ Function Create_Log_Folder
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_cert_folder -ItemType Directory | Out-Null
     }
-    If ($global:verbose_output){Write-Host $global:full_eventlog_folder" exsited" -ForegroundColor Red}
+
 
     #Creating net info and net trace folder
     $global:full_net_folder = $global:full_folder+"\Network\"
@@ -75,6 +75,7 @@ Function Create_Log_Folder
         New-Item -Path $global:full_net_folder -ItemType Directory | Out-Null
     }
 
+
     #Creating WAM folder
     $global:full_wam_folder = $global:full_folder+"\WAM\"
     If (!(Test-Path $global:full_wam_folder))
@@ -82,6 +83,7 @@ Function Create_Log_Folder
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_wam_folder -ItemType Directory | Out-Null
     }
+
 
     #Creating ETW logs folder
     $global:full_etw_folder = $global:full_folder+"\ETW\"
@@ -96,7 +98,8 @@ Function Create_Log_Folder
 Function Get_WAM_TokenBroker_Cache_Info
 {
     If ($global:verbose_output){Write-Host "We are in Get WAM" -ForegroundColor Red}
-    Write-Host " Collecting WAM information...`n" -ForegroundColor Blue
+
+    #Write-Host " Collecting WAM information...`n" -ForegroundColor Blue
 
     if ((Test-Path "$($env:LOCALAPPDATA)\Packages\Microsoft.AAD.BrokerPlugin_cw5n1h2txyewy\AC\TokenBroker\Accounts\") -eq "True") 
     {
@@ -113,7 +116,7 @@ Function Get_WAM_TokenBroker_Cache_Info
 
 Function Get_Other_Logs
 {
-    Write-Host " Collecting all other logs...`n" -ForegroundColor Blue
+    #Write-Host " Collecting all other logs...`n" -ForegroundColor Blue
     
     #dsregcmd
     dsregcmd.exe /status > $global:full_folder"\dsregcmd_status_user.txt" 2>&1 | Out-Null
@@ -148,7 +151,7 @@ Function Get_Other_Logs
     }
     else 
     {
-        "Not able to query SCP on AD from here" | Out-File -FilePath $global:full_folder"\SCP_AD_User.txt" 2>&1 | Out-Null    
+        "Not able to query SCP on AD from here." | Out-File -FilePath $global:full_folder"\SCP_AD_User.txt" 2>&1 | Out-Null    
     }
 
     # Getting GPO information
@@ -182,33 +185,38 @@ Function Get_Other_Logs
 
 # Start script
 #Added on 2023-8-2 to check if the powershell shell is running under admin context
-if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) 
+# 2023-11-16 Add to print current user name and prompt for continue
+$user_name = $env:USERNAME
+$user_netBIOS_name = whoami
+
+Write-Host "`nStart collecting logs under user $user_name ($user_netBIOS_name) context.`n" -ForegroundColor Yellow
+$answer = Read-Host "Are you sure you want to proceed (Y:Yes/N:No)"
+if ($answer -ne 'Y')
 {
-    Write-Host "You are running this powershell shell under administrator context!`nPlease re-start this powershell shell under user's context.`n" -ForegroundColor Red
     exit
 }
 
-Write-Host "`nPreparing collecting log.....`n" -ForegroundColor Yellow
+Write-Host "`n Preparing collecting log....." -ForegroundColor Blue
+
+# Creating log folders
 Create_Log_Folder
 
-# Start a new PowerShell window in Admin context
-Write-Host "Start a new PowerShell window under administrator context.`nPlease prepare an user credential who has local administrator priviledge." -ForegroundColor Yellow
-Write-Host "Please DO NOT close this window...`n" -ForegroundColor Red
-Start-Sleep 1
-Start-Process powershell -verb runas -ArgumentList "-NoExit", "-Command", "Set-Location", " '$global:Current_Folder';" , "Powershell.exe -Executionpolicy Bypass .\aad_log_admin.ps1; exit;" -Wait
-
-# Start collect logs in user context
-Write-Host "Start collecting logs under user context...`n" -ForegroundColor Yellow
+# Start Transcript
+Start-Transcript -Path $(Join-Path -Path $global:full_folder -ChildPath "transcript-user.log") -Append -IncludeInvocationHeader
 
 # Start functions
+Write-Host " Collecting WAM information..." -ForegroundColor Blue
 Get_WAM_TokenBroker_Cache_Info;
+
+Write-Host " Collecting all other logs..." -ForegroundColor Blue
 Get_Other_Logs;
 
 # Cleaning up
-Write-Host "Cleaning up...`n" -ForegroundColor Yellow
+Write-Host " Cleaning up...`n" -ForegroundColor Blue
+Stop-Transcript
 Remove-Variable verbose_output -Scope:global
 Remove-Variable full_folder -Scope:global
-Remove-Variable full_script_logs_folder -Scope:global
+Remove-Variable folder_file -Scope:global
 Remove-Variable full_eventlog_folder -Scope:global
 Remove-Variable full_reg_folder -Scope:global
 Remove-Variable full_cert_folder -Scope:global
@@ -220,3 +228,4 @@ Remove-Variable root_folder -Scope:global
 # Last Message
 Write-Host "Thank you for collecting logs." -ForegroundColor Yellow
 Write-Host "Please compress [C:\AAD_Logs] folder and send it to us." -ForegroundColor Yellow
+#>
