@@ -5,26 +5,20 @@ $PSDefaultParameterValues['out-file:width'] = 10000
 
 # Get the log folder
 $global:root_folder = "C:\AAD_Logs\"
-$temp_log_root_folder = Get-ChildItem $global:root_folder -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-$global:full_folder = $global:root_folder+$temp_log_root_folder 
-
-# Start Transcript
-Start-Transcript -Path $(Join-Path -Path $global:full_folder -ChildPath "transcript-admin.log") -Append -IncludeInvocationHeader
+$global:folder_file = $global:root_folder+$env:COMPUTERNAME
 
 # Get the current working folder
 $global:current_Folder = (Get-Location).Path
-
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-$global:verbose_output = $false
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-$global:full_script_logs_folder = ""
 $global:full_eventlog_folder = ""
 $global:full_reg_folder = ""
 $global:full_cert_folder = ""
 $global:full_net_folder = ""
 $global:full_wam_folder = ""
 $global:full_etw_folder = ""
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+$global:verbose_output = $false
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 $global:event_list = @(
     "Microsoft-Windows-AAD/Operational",
@@ -643,9 +637,6 @@ Function Wait_for_User
 {
     Write-Host "`nPress Enter key to stop logging.....`n" -ForegroundColor Yellow
     Read-Host
-
-    # Recored the end time of script
-    "End at "+(Get-Date) | Out-File -FilePath $global:full_script_logs_folder -Append
 }
 
 
@@ -654,47 +645,53 @@ Function Wait_for_User
 ####################################################
 Function Create_Log_Folder
 {
-    # Creating folder for logs of thie script
-    $global:full_script_logs_folder = $global:full_folder+"\Logs_of_script\"
-    If (!(Test-Path $global:full_script_logs_folder))
+    # Creating the root folder and the file is used in creating folders
+    if (!(Test-Path $global:root_folder))
+    {
+        If ($global:verbose_output){Write-Host "Creating Folder" $global:root_folder -ForegroundColor Red}
+        New-Item -Path $global:root_folder -ItemType Directory | Out-Null
+    }
+
+    (Get-Date).ToString("yyyy-MM-dd_HH-mm-ss") | Out-File $global:folder_file
+    $log_folder = Get-Content -Path $global:folder_file
+
+    # Local Parameters
+    $global:full_folder = $global:root_folder+$log_folder
+
+    If (!(Test-Path $global:full_folder))
     {
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
-        New-Item -Path $global:full_script_logs_folder -ItemType Directory | Out-Null
+        New-Item -Path $global:full_folder -ItemType Directory | Out-Null
     }
-    If ($global:verbose_output){Write-Host $global:full_script_logs_folder" exsited" -ForegroundColor Red}
-    $global:full_script_logs_folder = $global:full_script_logs_folder+"script_time_logs.txt"
-    $start_time = "Start at " 
-    $start_time += Get-Date
-    $start_time | Out-File -FilePath $global:full_script_logs_folder
-    
-    # Creating event logs folder
+
+    #Creating event logs folder
     $global:full_eventlog_folder = $global:full_folder+"\Event_Logs\"
     If (!(Test-Path $global:full_eventlog_folder))
     {
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_eventlog_folder -ItemType Directory | Out-Null
     }
-    If ($global:verbose_output){Write-Host $global:full_eventlog_folder" exsited" -ForegroundColor Red}
 
-    # Creating registry info folder
+
+    #Creating registry info folder
     $global:full_reg_folder = $global:full_folder+"\Registry\"
     If (!(Test-Path $global:full_reg_folder))
     {
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_reg_folder -ItemType Directory | Out-Null
     }
-    If ($global:verbose_output){Write-Host $global:full_eventlog_folder" exsited" -ForegroundColor Red}
+    
 
-    # Creating certificate folder
+    #Creating certificate folder
     $global:full_cert_folder = $global:full_folder+"\Certificates\"
     If (!(Test-Path $global:full_cert_folder))
     {
         If ($global:verbose_output){Write-Host "Creating Folder" $global:full_folder -ForegroundColor Red}
         New-Item -Path $global:full_cert_folder -ItemType Directory | Out-Null
     }
-    If ($global:verbose_output){Write-Host $global:full_eventlog_folder" exsited" -ForegroundColor Red}
+    
 
-    # Creating net info and net trace folder
+    #Creating net info and net trace folder
     $global:full_net_folder = $global:full_folder+"\Network\"
     If (!(Test-Path $global:full_net_folder))
     {
@@ -702,7 +699,8 @@ Function Create_Log_Folder
         New-Item -Path $global:full_net_folder -ItemType Directory | Out-Null
     }
 
-    # Creating WAM folder
+
+    #Creating WAM folder
     $global:full_wam_folder = $global:full_folder+"\WAM\"
     If (!(Test-Path $global:full_wam_folder))
     {
@@ -710,7 +708,8 @@ Function Create_Log_Folder
         New-Item -Path $global:full_wam_folder -ItemType Directory | Out-Null
     }
 
-    # Creating ETW logs folder
+
+    #Creating ETW logs folder
     $global:full_etw_folder = $global:full_folder+"\ETW\"
     If (!(Test-Path $global:full_etw_folder))
     {
@@ -722,14 +721,13 @@ Function Create_Log_Folder
 
 Function Start_PSR
 {
-    Write-Host " Starting PSR log.....`n" -ForegroundColor Blue
     psr.exe /start /output $global:full_folder"\psr.zip" /gui 0 /sc 1 /maxsc 100
 }
 
 
 Function Enable_Start_Event_Logs
 {
-    Write-Host " Starting all event logs.....`n" -ForegroundColor Blue
+    #Write-Host " Starting all event logs.....`n" -ForegroundColor Blue
     If ($global:verbose_output){Write-Host "WE are in Start_Event_Logs" -ForegroundColor Red}
 
     foreach ($each_log in $global:event_list)
@@ -786,7 +784,7 @@ Function Enable_Start_Event_Logs
 Function Start_ETW_Traces
 {
     If ($global:verbose_output){Write-Host "We are starting all ETW logs....." -ForegroundColor Red}
-    Write-Host " Starting all ETW logs.....`n" -ForegroundColor Blue
+    #Write-Host " Starting all ETW logs.....`n" -ForegroundColor Blue
     
     #================================ WAM ETW ================================
     $providerFile_WAM = Join-Path $global:full_etw_folder -ChildPath "wam.txt"
@@ -910,7 +908,7 @@ Function Start_ETW_Traces
 
 Function Start_Network_Trace
 {
-    Write-Host " Starting network trace.....`n" -ForegroundColor Blue
+    #Write-Host " Starting network trace.....`n" -ForegroundColor Blue
     If ($global:verbose_output){Write-Host "We are starting network trace." -ForegroundColor Red}
     netsh trace start capture=yes scenario=InternetClient_dbg maxsize=4096 tracefile=$global:full_net_folder"Network_Trace.etl" | Out-Null
 }
@@ -922,7 +920,7 @@ Function Start_Network_Trace
 Function Stop_NetTrace_Get_NetInfo
 {
     If ($global:verbose_output){Write-Host "We are stopping network trace..." -ForegroundColor Red}
-    Write-Host " Stopping network trace and collecting network related information...`n" -ForegroundColor Blue
+    #Write-Host " Stopping network trace and collecting network related information...`n" -ForegroundColor Blue
 
     #Stopping nertwork trace
     netsh trace stop | Out-Null
@@ -962,7 +960,7 @@ Function Stop_NetTrace_Get_NetInfo
 function Stop_ETW_Trace 
 {
     If ($global:verbose_output){Write-Host "We are in Stop_WAM_Trace...." -ForegroundColor Red}
-    Write-Host " Stopping and collecting ETW logs.....`n" -ForegroundColor Blue
+    #Write-Host " Stopping and collecting ETW logs.....`n" -ForegroundColor Blue
 
     logman stop "WAM_Trace" -ets | Out-Null
     #Write-Host "WAM_Trace stopped....."
@@ -996,7 +994,7 @@ function Stop_ETW_Trace
 Function Stop_Event_Logs
 {
     If ($global:verbose_output){Write-Host "We are in Stop_Event_Logs" -ForegroundColor Red}
-    Write-Host " Stopping and collecting Event logs...`n" -ForegroundColor Blue
+    #Write-Host " Stopping and collecting Event logs...`n" -ForegroundColor Blue
 
     foreach ($each_log in $global:event_list)
     {
@@ -1122,6 +1120,7 @@ Function Get_Certs
     If ($global:verbose_output){Write-Host "Exiting Get_Certs" -ForegroundColor Red}
 }
 
+
 Function Get_SCP
 {
     If ($global:verbose_output){Write-Host "Entering Get_SCP" -ForegroundColor Red}
@@ -1132,7 +1131,7 @@ Function Get_SCP
     # Get SCP on AD
     $Root = [ADSI]"LDAP://RootDSE"
     $rootdn = $Root.rootDomainNamingContext
-    if ($rootdn -ne $null)
+    if ($null -ne $rootdn)
     {
         $scp = New-Object System.DirectoryServices.DirectoryEntry
         $scp.Path = "LDAP://CN=62a0ff2e-97b9-4513-943f-0d221bd30080,CN=Device Registration Configuration,CN=Services,CN=Configuration,"+$rootdn
@@ -1173,7 +1172,7 @@ Function Get_ALL_Other_INFO
     klist.exe query_bind > $global:full_folder"\klist_query_bind_admin.txt" 2>&1 | Out-Null
     
     # QFE
-    wmic qfe list > $global:full_folder"\qfes_installed.txt" 2>&1 | Out-Null
+    wmic qfe list > $global:full_folder"\qfe_installed.txt" 2>&1 | Out-Null
 
     # whoami
     whoami /UPN > $global:full_folder"\whoami_upn_admin.txt" 2>&1 | Out-Null
@@ -1199,20 +1198,43 @@ Function Stop_PSR
 ####################################################
 #               Run All Functions
 ####################################################
-Write-Host "`nPreparing for logging.....`n" -ForegroundColor Yellow
+# Start script
+#Added on 2023-8-2 to check if the powershell shell is running under admin context
+# 2023-11-16 Add to print current user name and prompt for continue
+$user_name = $env:USERNAME
+$user_netBIOS_name = whoami
+
+Write-Host "`nStart collecting logs under user $user_name ($user_netBIOS_name) context." -ForegroundColor Yellow
+Write-Host "Please make sure this user $user_name ($user_netBIOS_name) has administrator priviledge.`n" -ForegroundColor Yellow
+$answer = Read-Host "Are you sure you want to proceed (Y:Yes/N:No)"
+if ($answer -ne 'Y')
+{
+    exit
+}
+
+
+Write-Host "`n Preparing for logging....." -ForegroundColor Blue
+
+# Creating log folders
 Create_Log_Folder;
 
-Write-Host "Start collecting logs under user context...`n" -ForegroundColor Yellow
+# Start Transcript
+Start-Transcript -Path $(Join-Path -Path $global:full_folder -ChildPath "transcript-admin.log") -Append -IncludeInvocationHeader
+
 #Write-Host "We are starting PSR log.....`n" -ForegroundColor Blue
+Write-Host " Starting PSR log....." -ForegroundColor Blue
 Start_PSR;
 
 #Write-Host "We are starting all event logs.....`n" -ForegroundColor Blue
+Write-Host " Starting all event logs....." -ForegroundColor Blue
 Enable_Start_Event_Logs;
 
 #Write-Host "We are starting all ETW logs.....`n" -ForegroundColor Blue
+Write-Host " Starting all ETW logs....." -ForegroundColor Blue
 Start_ETW_Traces;
 
 #Write-Host "We are starting network trace.....`n" -ForegroundColor Blue
+Write-Host " Starting network trace....." -ForegroundColor Blue
 Start_Network_Trace;
 
 # Wait for user to enter
@@ -1220,30 +1242,34 @@ Wait_for_User;
 
 # Stop Logs
 #Write-Host "We are stopping and collecting network trace.....This could take several minutes depends on the log size.`n" -ForegroundColor Blue
+Write-Host " Stopping network trace and collecting network related information..." -ForegroundColor Blue
 Stop_NetTrace_Get_NetInfo;
 
 #Write-Host "We are stopping and collecting ETW logs.....`n" -ForegroundColor Blue
+Write-Host " Stopping and collecting ETW logs....." -ForegroundColor Blue
 Stop_ETW_Trace;
 
 #Write-Host "We are stopping and collecting Event logs.....`n" -ForegroundColor Blue
+Write-Host " Stopping and collecting Event logs..." -ForegroundColor Blue
 Stop_Event_Logs;
 
 # Get all informations
-Write-Host " Collecting all other information...`n" -ForegroundColor Blue
+Write-Host " Gathering all other information..." -ForegroundColor Blue
 Get_Reg;
 Get_Certs;
 Get_SCP;
 Get_ALL_Other_INFO;
 #Write-Host "Done collecting all other information...`n" -ForegroundColor Blue
 
-Write-Host " Stopping and collecing PSR log...`n" -ForegroundColor Blue
+Write-Host " Stopping and collecing PSR log..." -ForegroundColor Blue
 Stop_PSR;
-#>
+
 
 # Clean up variables
-Write-Host "Cleaning up...`n" -ForegroundColor Yellow
+Write-Host " Cleaning up..." -ForegroundColor Blue
+Stop-Transcript
 Remove-Variable full_folder -Scope:global
-Remove-Variable full_script_logs_folder -Scope:global
+Remove-Variable folder_file -Scope:global
 Remove-Variable full_eventlog_folder -Scope:global
 Remove-Variable full_reg_folder -Scope:global
 Remove-Variable full_cert_folder -Scope:global
@@ -1253,4 +1279,4 @@ Remove-Variable event_log_disabled_by_default -Scope:global
 Remove-Variable CAPI2_Default_Size -Scope:global
 Remove-Variable full_etw_folder -Scope:global
 
-Write-Host "Now you can close this window by entering 'Exit'.`n" -ForegroundColor Yellow
+Write-Host "Collecting log by administrator context is done.`n" -ForegroundColor Yellow
