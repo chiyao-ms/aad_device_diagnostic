@@ -3,7 +3,7 @@
 ## 簡易版採取手順
 1. 本サイトの Code をクリックし、Download ZIP から　aad_device_diagnostic-main.zip をダウンロードし、事象が発生する端末に展開します。
 
-2. **事象が発生するユーザー、または通常端末を利用するユーザーの権限**で PowerShell を起動し、aad_device_diagnostic-main.zip を展開したいフォルダに移動します。
+2. **事象が発生するユーザー、または通常端末を利用するユーザーの権限**で PowerShell を起動し、aad_device_diagnostic-main.zip を展開したフォルダに cd コマンド等で移動します。
 3. 以下のコマンドを入力し、aad_log_user.ps1 スクリプトを実行します。
 
 ```
@@ -30,7 +30,7 @@ Please compress [C:\AAD_Logs] folder and send it to us.
 ## 詳細版採取手順
 1. 本サイトの Code をクリックし、Download ZIP から　aad_device_diagnostic-main.zip をダウンロードし、事象が発生する端末に展開します。
 
-2. **管理者権限**で PowerSehll を起動し、aad_device_diagnostic-main.zip を展開したいフォルダに移動します。
+2. **管理者権限**で PowerSehll を起動し、aad_device_diagnostic-main.zip を展開したフォルダに cd コマンド等で移動します。
 
 3. 以下を入力し、aad_log_admin.ps1 スクリプトを実行します。
 
@@ -48,7 +48,7 @@ Please make sure this user <ユーザー名> (<ユーザー名>) has administrat
 Are you sure you want to proceed (Y:Yes/N:No): Y
 ```
 
-5. 以下のメッセージが表示されましたら、スクリプトの実行が止まります。
+5. 以下のメッセージが表示されましたら、スクリプトの実行が止まりますので起動している PowerShell ウィンドウを閉じずに次の手順に進みます。
 
 ```
 Press Enter key to stop logging.....
@@ -56,15 +56,15 @@ Press Enter key to stop logging.....
 
 6. 事象を再現します。
 
-7. 事象再現後、手順 5 のメッセージが表示されている PowerShell ウィンドウで "Enter" を入力します。 
+7. 事象再現後、手順 5 のメッセージが表示されている PowerShell ウィンドウで "Enter" キーを入力します。
 
-8. 以下のメッセージが表示されましたら、管理者権限でのログ採取は完了します。
+8. 以下のメッセージが表示されましたら、管理者権限でのログ採取は完了しますので次に進みます。
 
 ```
 Collecting log by administrator context is done.
 ```
 
-9. **事象が発生するユーザー、または通常端末を利用するユーザーの権限**で PowerShell を起動し、aad_device_diagnostic-main.zip を展開したいフォルダに移動します。
+9. **事象が発生するユーザー、または通常端末を利用するユーザーの権限**で PowerShell を起動し (「管理者として実行」は利用しないでください)、aad_device_diagnostic-main.zip を展開したフォルダに cd コマンド等で移動します。
 10. 以下のコマンドを入力し、aad_log_user.ps1 スクリプトを実行します。
 
 ```
