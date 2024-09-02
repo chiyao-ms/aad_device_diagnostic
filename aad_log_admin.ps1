@@ -50,6 +50,7 @@ $global:event_list = @(
     #"Microsoft-Windows-DeviceManagement-Enterprise-Diagnostics-Provider/Autopilot",
     "Microsoft-Windows-DeviceManagement-Enterprise-Diagnostics-Provider/Operational",
     "Microsoft-Windows-TaskScheduler/Operational"
+    "Microsoft-Windows-Store/Operational"
 )
 
 $global:event_log_disabled_by_default = @()
